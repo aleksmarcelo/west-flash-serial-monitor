@@ -11,7 +11,7 @@ setup(
     author_email="marcelo.aleks_AT_gmail.com",
     url="https://github.com/username/west-flash-serial-monitor",
     license="MIT",
-    py_modules=["monitor", "flash"],
+    py_modules=["monitor", "flash", "custom_install_commands"],
     install_requires=[
         # "west",
     ],
