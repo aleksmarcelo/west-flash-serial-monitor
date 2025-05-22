@@ -1,5 +1,3 @@
-
-
 from setuptools import setup
 
 from custom_install_commands import CustomInstallCommand
@@ -13,7 +11,7 @@ setup(
     author_email="marcelo.aleks_AT_gmail.com",
     url="https://github.com/username/west-flash-serial-monitor",
     license="MIT",
-    py_modules=["monitor", "my_west"],
+    py_modules=["monitor", "flash"],
     install_requires=[
         # "west",
     ],
