@@ -45,27 +45,35 @@ def remove_file(path):
 # Custom installation script
 class CustomInstallCommand(install):
     def run(self):
-        install.run(self)
-        
-        # diretório onde este script está
-        current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-        
-        # caminhos completos para os arquivos fonte
-        flash_src = os.path.join(current_dir, "flash.py")
-        monitor_src = os.path.join(current_dir, "monitor.py")
-        
-        print(f"Instalando de: {current_dir}")
-        
-        ensure_dir(ZEPHYR_SCRIPTS_PATH)
-        if os.path.exists(FLASH_ORIGINAL):
+        try:
+            install.run(self)
+            
+            # directory where this script is located
+            current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+            
+            # full paths to source files
+            flash_src = os.path.join(current_dir, "flash.py")
+            monitor_src = os.path.join(current_dir, "monitor.py")
+            
+            print(f"Installing from: {current_dir}")
+            print(f"Checking Zephyr directory: {ZEPHYR_SCRIPTS_PATH} - Exists: {os.path.exists(ZEPHYR_SCRIPTS_PATH)}")
+            
+            ensure_dir(ZEPHYR_SCRIPTS_PATH)
+            if os.path.exists(FLASH_ORIGINAL):
+                print(f"Original flash file exists, just updating files")
+                copy_file(flash_src, FLASH_NEW)
+                copy_file(monitor_src, MONITOR_NEW)
+                return
+            
+            print(f"Backing up original files and installing new ones")
+            backup_file(WEST_COMMANDS_YML, WEST_COMMANDS_YML_BACKUP)
+            move_file(FLASH_NEW, FLASH_ORIGINAL)
             copy_file(flash_src, FLASH_NEW)
             copy_file(monitor_src, MONITOR_NEW)
-            return
-            
-        backup_file(WEST_COMMANDS_YML, WEST_COMMANDS_YML_BACKUP)
-        move_file(FLASH_NEW, FLASH_ORIGINAL)
-        copy_file(flash_src, FLASH_NEW)
-        copy_file(monitor_src, MONITOR_NEW)
-        append_yaml_monitor(WEST_COMMANDS_YML)
+            append_yaml_monitor(WEST_COMMANDS_YML)
+            print(f"Installation completed successfully")
+        except Exception as e:
+            print(f"INSTALLATION ERROR: {e}")
+            raise  # Re-raises the exception for pip to show
 
 
